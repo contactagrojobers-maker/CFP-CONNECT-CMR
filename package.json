@@ -1,0 +1,10 @@
+{
+  "name": "cfp-connect-mvp",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "npx serve .",
+    "preview": "npx serve . -l 4173",
+    "deploy:vercel": "vercel --prod"
+  }
+}
