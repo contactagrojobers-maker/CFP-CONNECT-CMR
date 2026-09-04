@@ -28,6 +28,8 @@ grant execute on function public.manages_center(uuid) to anon,authenticated;
 
 drop policy if exists "admins manage profiles" on public.profiles;
 create policy "admins manage profiles" on public.profiles for all using(public.is_admin()) with check(public.is_admin());
+drop policy if exists "admins manage programs" on public.programs;
+create policy "admins manage programs" on public.programs for all to authenticated using(public.is_admin()) with check(public.is_admin());
 drop policy if exists "managers manage center programs" on public.center_programs;
 create policy "managers manage center programs" on public.center_programs for all using(public.manages_center(center_id)) with check(public.manages_center(center_id));
 drop policy if exists "managers manage center photos" on public.center_photos;

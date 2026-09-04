@@ -140,6 +140,7 @@ create policy "public reads regions" on public.regions for select using (true);
 create policy "public reads departments" on public.departments for select using (true);
 create policy "public reads cities" on public.cities for select using (true);
 create policy "public reads programs" on public.programs for select using (true);
+create policy "admins manage programs" on public.programs for all to authenticated using (public.is_admin()) with check (public.is_admin());
 create policy "public reads published centers" on public.centers for select using (status='published' or public.is_admin() or public.manages_center(id));
 create policy "admins manage centers" on public.centers for all using (public.is_admin()) with check (public.is_admin());
 create policy "managers update their centers" on public.centers for update using (public.manages_center(id)) with check (public.manages_center(id));
