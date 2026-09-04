@@ -31,4 +31,4 @@ Le dépôt est préparé pour :
 - Vercel : hébergement du site
 - Supabase : base de données, authentification, stockage des photos et sécurité
 
-Consulter [DEPLOYMENT.md](DEPLOYMENT.md) pour la procédure complète. Le prototype utilise encore ses données locales afin de fonctionner immédiatement ; le schéma du futur backend se trouve dans `supabase/schema.sql`.
+Consulter [DEPLOYMENT.md](DEPLOYMENT.md) pour la procédure complète. L’application est configurée pour Supabase et conserve les données locales comme solution de secours. Exécuter `supabase/schema.sql`, puis `supabase/02_auth_and_seed.sql` dans cet ordre.
