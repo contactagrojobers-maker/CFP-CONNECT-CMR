@@ -29,6 +29,9 @@
   }
   async function submitReview(centerId,name,rating,comment,userId){const {error}=await client.from('reviews').insert({center_id:centerId,author_id:userId,author_name:name,rating,comment,status:'pending'});if(error)throw error}
   async function submitContact(payload){const {error}=await client.from('contact_requests').insert(payload);if(error)throw error}
+  async function submitClaim(payload){if(!client)throw new Error('Connexion au service indisponible.');const {error}=await client.from('claim_requests').insert(payload);if(error)throw error}
+  async function fetchClaimRequests(){if(!client)return[];const {data,error}=await client.from('claim_requests').select('id,center_id,center_name,full_name,function_title,phone,status,created_at,centers(name)').order('created_at',{ascending:false});if(error)throw error;return data||[]}
+  async function updateClaimRequest(id,status){const {error}=await client.from('claim_requests').update({status,reviewed_at:new Date().toISOString()}).eq('id',id);if(error)throw error}
   async function cityId(name='Bertoua'){const {data,error}=await client.from('cities').select('id').eq('name',name).maybeSingle();if(error)throw error;return data?.id}
   async function saveCenter(center){
     const payload={name:center.name,slug:center.slug||slugify(center.name),acronym:center.short||null,center_type:center.type||'Centre professionnel',district:center.district||null,description:center.about||null,phone:center.phone||null,whatsapp:center.whatsapp||null,accreditation_number:center.accreditation||null,accreditation_verified:!!center.verified,next_intake:center.nextIntake||null,status:'published',city_id:await cityId(center.city)};
@@ -41,5 +44,5 @@
       if(names.length){const {data:programRows,error:programError}=await client.from('programs').upsert(names.map(name=>({name})),{onConflict:'name'}).select('id,name');if(programError)throw programError;const {error:deleteError}=await client.from('center_programs').delete().eq('center_id',savedId);if(deleteError)throw deleteError;const links=programRows.map(row=>{const source=clean.find(p=>p.name===row.name)||{};return{center_id:savedId,program_id:row.id,duration:source.duration||'À préciser',diploma:source.diploma||'À préciser',admission_level:source.level||'À préciser'}});const {error:linkError}=await client.from('center_programs').insert(links);if(linkError)throw linkError}}
     return savedId;
   }
-  window.CFPBackend={init,session,signIn,signOut,profile,managedCenterIds,fetchCenters,submitReview,submitContact,saveCenter,get client(){return client},get ready(){return!!client}};
+  window.CFPBackend={init,session,signIn,signOut,profile,managedCenterIds,fetchCenters,submitReview,submitContact,submitClaim,fetchClaimRequests,updateClaimRequest,saveCenter,get client(){return client},get ready(){return!!client}};
 })();
